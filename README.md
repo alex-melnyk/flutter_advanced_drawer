@@ -1,7 +1,7 @@
 # flutter_advanced_drawer
 An advanced drawer widget, that can be fully customized with size, text, color, radius of corners.
 
-| Switch OFF State | Switch ON State |
+| Drawer OPEN State | Drawer CLOSED State |
 |:-:|:-:|
 | ![Advanced Drawer Open State](./OPEN.png) | ![Advanced Drawer Closed State](./CLOSED.png) |
 
