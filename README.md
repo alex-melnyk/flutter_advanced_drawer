@@ -3,7 +3,7 @@ An advanced drawer widget, that can be fully customized with size, text, color, 
 
 | Switch OFF State | Switch ON State |
 |:-:|:-:|
-| ![Advanced Drawer Open State](./OPEN.jpg) | ![Advanced Drawer Close State](./CLOSE.jpg) |
+| ![Advanced Drawer Open State](./OPEN.png) | ![Advanced Drawer Closed State](./CLOSED.png) |
 
 ## AdvancedDrawer Parameters
 |Parameter|Description|Type|Default|
