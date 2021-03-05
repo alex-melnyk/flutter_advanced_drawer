@@ -1,5 +1,6 @@
 part of '../flutter_advanced_drawer.dart';
 
+/// AdvancedDrawer widget.
 class AdvancedDrawer extends StatefulWidget {
   const AdvancedDrawer({
     Key key,

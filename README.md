@@ -1,7 +1,8 @@
 # flutter_advanced_drawer
 An advanced drawer widget, that can be fully customized with size, text, color, radius of corners.
 
-| Drawer OPEN State | Drawer CLOSED State |
+## Advanced Drawer States
+| Drawer Open State | Drawer Closed State |
 |:-:|:-:|
 | ![Advanced Drawer Open State](./OPEN.png) | ![Advanced Drawer Closed State](./CLOSED.png) |
 
@@ -16,3 +17,8 @@ An advanced drawer widget, that can be fully customized with size, text, color, 
 |`animationDuration`|Animation duration|*Duration*|300ms|
 |`animationCurve`|Animation curve|*Curve*|Curves.easeInOut|
 |`childDecoration`|Child container decoration|*BoxDecoration*|Shadow, BorderRadius|
+
+## Preview
+| Preview Tap | Preview Gesture |
+|:-:|:-:|
+| ![Advanced Drawer Tap Animation](./PREVIEW_TAP.gif) | ![Advanced Drawer Gestures](./PREVIEW_GESTURE.gif) |
