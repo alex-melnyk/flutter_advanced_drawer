@@ -3,9 +3,9 @@ part of '../flutter_advanced_drawer.dart';
 /// AdvancedDrawer widget.
 class AdvancedDrawer extends StatefulWidget {
   const AdvancedDrawer({
-    Key key,
-    @required this.child,
-    @required this.drawer,
+    Key? key,
+    required this.child,
+    required this.drawer,
     this.controller,
     this.backdropColor,
     this.openRatio = 0.75,
@@ -29,10 +29,10 @@ class AdvancedDrawer extends StatefulWidget {
   final Widget drawer;
 
   /// Controller that controls widget state.
-  final AdvancedDrawerController controller;
+  final AdvancedDrawerController? controller;
 
   /// Backdrop color.
-  final Color backdropColor;
+  final Color? backdropColor;
 
   /// Opening ratio.
   final double openRatio;
@@ -52,13 +52,13 @@ class AdvancedDrawer extends StatefulWidget {
 
 class _AdvancedDrawerState extends State<AdvancedDrawer>
     with SingleTickerProviderStateMixin {
-  AdvancedDrawerController _controller;
-  AnimationController _animationController;
-  Animation<double> _commonAnimation;
+  late AdvancedDrawerController _controller;
+  late AnimationController _animationController;
+  late Animation<double> _commonAnimation;
   bool _captured = false;
-  double _offsetValue;
-  Offset _startPosition;
-  Offset _freshPosition;
+  late double _offsetValue;
+  Offset? _startPosition;
+  late Offset _freshPosition;
 
   @override
   void initState() {
@@ -69,7 +69,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     _animationController = AnimationController(
       vsync: this,
       duration: widget.animationDuration,
-      value: _controller.value.visible ? 1 : 0,
+      value: _controller.value.visible! ? 1 : 0,
     );
 
     _commonAnimation = CurvedAnimation(
@@ -78,7 +78,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     );
 
     _controller.addListener(() {
-      _controller.value.visible
+      _controller.value.visible!
           ? _animationController.forward()
           : _animationController.reverse();
     });
@@ -166,23 +166,27 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
               child: ValueListenableBuilder<AdvancedDrawerValue>(
                 valueListenable: _controller,
                 builder: (_, value, child) {
-                  return Stack(
-                    children: <Widget>[
-                      child,
-                      if (value.visible)
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () => _controller.hideDrawer(),
-                            splashColor: theme.primaryColor.withOpacity(0.12),
-                            highlightColor: Colors.transparent,
-                            child: Container(
-                              color: Colors.transparent,
+                  if (value.visible!) {
+                    return Stack(
+                      children: [
+                        child!,
+                        if (value.visible!)
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () => _controller.hideDrawer(),
+                              splashColor: theme.primaryColor.withOpacity(0.12),
+                              highlightColor: Colors.transparent,
+                              child: Container(
+                                color: Colors.transparent,
+                              ),
                             ),
                           ),
-                        ),
-                    ],
-                  );
+                      ],
+                    );
+                  }
+
+                  return child!;
                 },
                 child: widget.child,
               ),
@@ -198,8 +202,8 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
 
     final offset = screenSize.width * (1.0 - widget.openRatio);
 
-    if (!_controller.value.visible && details.globalPosition.dx > offset ||
-        _controller.value.visible &&
+    if (!_controller.value.visible! && details.globalPosition.dx > offset ||
+        _controller.value.visible! &&
             details.globalPosition.dx < screenSize.width - offset) {
       _captured = false;
       return;
@@ -219,7 +223,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
 
     _freshPosition = details.globalPosition;
 
-    final diff = (_freshPosition - _startPosition).dx;
+    final diff = (_freshPosition - _startPosition!).dx;
 
     _animationController.value =
         _offsetValue + diff / (screenSize.width * widget.openRatio);
@@ -234,13 +238,13 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     if (_animationController.value >= 0.5) {
       _controller.showDrawer();
 
-      if (_controller.value.visible) {
+      if (_controller.value.visible!) {
         _animationController.animateTo(1);
       }
     } else {
       _controller.hideDrawer();
 
-      if (!_controller.value.visible) {
+      if (!_controller.value.visible!) {
         _animationController.animateTo(0);
       }
     }

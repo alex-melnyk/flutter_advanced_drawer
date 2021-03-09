@@ -7,7 +7,7 @@ class AdvancedDrawerValue {
   });
 
   /// Indicates whether drawer visible or not.
-  final bool visible;
+  final bool? visible;
 
   factory AdvancedDrawerValue.hidden() {
     return const AdvancedDrawerValue(

@@ -12,10 +12,6 @@ dependencies:
   flutter_advanced_drawer:
     path: ../
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
 flutter:
   uses-material-design: true
 

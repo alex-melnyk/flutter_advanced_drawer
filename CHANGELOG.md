@@ -1,3 +1,7 @@
+## 1.0.0
+
+* Null Safety implemented.
+
 ## 0.0.2+1
 
 * Preview images fixed.
