@@ -4,7 +4,7 @@ An advanced drawer widget, that can be fully customized with size, text, color, 
 ## Advanced Drawer States
 | Drawer Open State | Drawer Closed State |
 |:-:|:-:|
-| ![Advanced Drawer Open State](./OPEN.png) | ![Advanced Drawer Closed State](./CLOSED.png) |
+| ![Advanced Drawer Open State](./PREVIEW_OPENED.png) | ![Advanced Drawer Closed State](./PREVIEW_CLOSED.png) |
 
 ## AdvancedDrawer Parameters
 |Parameter|Description|Type|Default|
