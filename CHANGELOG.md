@@ -1,3 +1,7 @@
+## 1.0.0+1
+
+* LICENSE CHANGED.
+
 ## 1.0.0
 
 * Null Safety implemented.
