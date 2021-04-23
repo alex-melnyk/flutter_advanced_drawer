@@ -1,3 +1,7 @@
+## 1.0.0+2
+
+* iOS example app running issue fixed.
+
 ## 1.0.0+1
 
 * LICENSE CHANGED.
