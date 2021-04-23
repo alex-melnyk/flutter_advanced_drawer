@@ -24,13 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    AdvancedDrawer(
-      backdropColor: Colors.blueGrey,
-      controller: _advancedDrawerController,
-      child: SizedBox(),
-      drawer: SizedBox(),
-    );
-
     return AdvancedDrawer(
       backdropColor: Colors.blueGrey,
       controller: _advancedDrawerController,
