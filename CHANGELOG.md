@@ -1,3 +1,8 @@
+## 1.1.0
+
+* Animation improvements.
+* Child decoration animation property added.
+
 ## 1.0.0+2
 
 * iOS example app running issue fixed.

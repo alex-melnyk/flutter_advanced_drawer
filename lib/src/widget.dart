@@ -9,17 +9,10 @@ class AdvancedDrawer extends StatefulWidget {
     this.controller,
     this.backdropColor,
     this.openRatio = 0.75,
-    this.animationDuration = const Duration(milliseconds: 300),
-    this.animationCurve = Curves.easeInOut,
-    this.childDecoration = const BoxDecoration(
-      boxShadow: <BoxShadow>[
-        BoxShadow(
-          color: Colors.black12,
-          blurRadius: 8.0,
-        ),
-      ],
-      borderRadius: const BorderRadius.all(Radius.circular(16)),
-    ),
+    this.animationDuration = const Duration(milliseconds: 250),
+    this.animationCurve,
+    this.childDecoration,
+    this.animateChildDecoration = true,
   }) : super(key: key);
 
   /// Child widget. (Usually widget that represent a screen)
@@ -41,10 +34,14 @@ class AdvancedDrawer extends StatefulWidget {
   final Duration animationDuration;
 
   /// Animation curve.
-  final Curve animationCurve;
+  final Curve? animationCurve;
 
   /// Child container decoration in open widget state.
-  final BoxDecoration childDecoration;
+  final BoxDecoration? childDecoration;
+
+  /// Indicates that [childDecoration] might be animated or not.
+  /// NOTICE: It may cause animation jerks.
+  final bool animateChildDecoration;
 
   @override
   _AdvancedDrawerState createState() => _AdvancedDrawerState();
@@ -54,17 +51,20 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     with SingleTickerProviderStateMixin {
   late AdvancedDrawerController _controller;
   late AnimationController _animationController;
-  late Animation<double> _commonAnimation;
-  bool _captured = false;
+  late Animation<double> drawerScalingAnimation;
+  late Animation<double> drawerOpacityAnimation;
+  late Animation<double> screenScalingTween;
   late double _offsetValue;
-  Offset? _startPosition;
   late Offset _freshPosition;
+  Offset? _startPosition;
+  bool _captured = false;
 
   @override
   void initState() {
     super.initState();
 
     _controller = widget.controller ?? AdvancedDrawerController();
+    _controller.addListener(handleControllerChanged);
 
     _animationController = AnimationController(
       vsync: this,
@@ -72,43 +72,24 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
       value: _controller.value.visible! ? 1 : 0,
     );
 
-    _commonAnimation = CurvedAnimation(
-      parent: _animationController,
-      curve: widget.animationCurve,
-    );
+    drawerScalingAnimation = Tween<double>(
+      begin: 0.75,
+      end: 1.0,
+    ).animate(_animationController);
 
-    _controller.addListener(() {
-      _controller.value.visible!
-          ? _animationController.forward()
-          : _animationController.reverse();
-    });
+    drawerOpacityAnimation = Tween<double>(
+      begin: 0.25,
+      end: 1.0,
+    ).animate(_animationController);
+
+    screenScalingTween = Tween<double>(
+      begin: 1.0,
+      end: 0.85,
+    ).animate(_animationController);
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final screenSize = MediaQuery.of(context).size;
-
-    final drawerScalingAnimation = Tween<double>(
-      begin: 0.75,
-      end: 1.0,
-    ).animate(_commonAnimation);
-
-    final drawerOpacityAnimation = Tween<double>(
-      begin: 0.25,
-      end: 1.0,
-    ).animate(_commonAnimation);
-
-    final screenScalingTween = Tween<double>(
-      begin: 1.0,
-      end: 0.85,
-    ).animate(_commonAnimation);
-
-    final screenTranslateTween = Tween<Offset>(
-      begin: Offset(0, 0),
-      end: Offset(screenSize.width * widget.openRatio, 0),
-    ).animate(_commonAnimation);
-
     return Material(
       color: widget.backdropColor,
       child: GestureDetector(
@@ -116,85 +97,106 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
         onHorizontalDragUpdate: _handleDragUpdate,
         onHorizontalDragEnd: _handleDragEnd,
         onHorizontalDragCancel: _handleDragCancel,
-        child: Stack(
-          children: <Widget>[
-            // -------- DRAWER
-            FractionallySizedBox(
-              widthFactor: widget.openRatio,
-              child: AnimatedBuilder(
-                animation: _animationController,
-                builder: (context, child) {
-                  return Transform.scale(
-                    alignment: Alignment.centerRight,
-                    scale: drawerScalingAnimation.value,
-                    child: Opacity(
-                      opacity: drawerOpacityAnimation.value,
-                      child: child,
-                    ),
-                  );
-                },
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  child: widget.drawer,
-                ),
-              ),
-            ),
-            // -------- CHILD
-            AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) {
-                return Transform.translate(
-                  offset: screenTranslateTween.value,
-                  child: Transform.scale(
-                    alignment: Alignment.centerLeft,
-                    scale: screenScalingTween.value,
-                    child: Container(
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration.lerp(
-                        BoxDecoration(
-                          boxShadow: const [],
-                          borderRadius: BorderRadius.zero,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final maxOffset = constraints.maxWidth * widget.openRatio;
+
+            final screenTranslateTween = Tween<Offset>(
+              begin: Offset(0, 0),
+              end: Offset(maxOffset, 0),
+            ).animate(widget.animationCurve != null
+                ? CurvedAnimation(
+                    parent: _animationController,
+                    curve: widget.animationCurve!,
+                  )
+                : _animationController);
+
+            return Stack(
+              children: <Widget>[
+                // -------- DRAWER
+                FractionallySizedBox(
+                  widthFactor: widget.openRatio,
+                  child: AnimatedBuilder(
+                    animation: _animationController,
+                    builder: (context, child) {
+                      return Opacity(
+                        opacity: drawerOpacityAnimation.value,
+                        child: Transform.scale(
+                          alignment: Alignment.centerRight,
+                          scale: drawerScalingAnimation.value,
+                          child: child,
                         ),
-                        widget.childDecoration,
-                        _animationController.value,
-                      ),
-                      child: child,
+                      );
+                    },
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: widget.drawer,
                     ),
                   ),
-                );
-              },
-              child: ValueListenableBuilder<AdvancedDrawerValue>(
-                valueListenable: _controller,
-                builder: (_, value, child) {
-                  if (value.visible!) {
-                    return Stack(
-                      children: [
-                        child!,
-                        if (value.visible!)
-                          Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () => _controller.hideDrawer(),
-                              splashColor: theme.primaryColor.withOpacity(0.12),
-                              highlightColor: Colors.transparent,
-                              child: Container(
-                                color: Colors.transparent,
-                              ),
-                            ),
-                          ),
-                      ],
+                ),
+                // -------- CHILD
+                AnimatedBuilder(
+                  animation: _animationController,
+                  builder: (context, child) {
+                    return Transform.translate(
+                      offset: screenTranslateTween.value,
+                      child: Transform.scale(
+                        alignment: Alignment.centerLeft,
+                        scale: screenScalingTween.value,
+                        child: Container(
+                          clipBehavior: Clip.antiAlias,
+                          decoration: widget.animateChildDecoration
+                              ? BoxDecoration.lerp(
+                                  const BoxDecoration(
+                                    boxShadow: const [],
+                                    borderRadius: BorderRadius.zero,
+                                  ),
+                                  widget.childDecoration,
+                                  _animationController.value,
+                                )
+                              : widget.childDecoration,
+                          child: child,
+                        ),
+                      ),
                     );
-                  }
+                  },
+                  child: ValueListenableBuilder<AdvancedDrawerValue>(
+                    valueListenable: _controller,
+                    builder: (_, value, child) {
+                      if (value.visible!) {
+                        return Stack(
+                          children: [
+                            child!,
+                            if (value.visible!)
+                              Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: _controller.hideDrawer,
+                                  highlightColor: Colors.transparent,
+                                  child: Container(),
+                                ),
+                              ),
+                          ],
+                        );
+                      }
 
-                  return child!;
-                },
-                child: widget.child,
-              ),
-            ),
-          ],
+                      return child!;
+                    },
+                    child: widget.child,
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
+  }
+
+  void handleControllerChanged() {
+    _controller.value.visible!
+        ? _animationController.forward()
+        : _animationController.reverse();
   }
 
   void _handleDragStart(DragStartDetails details) {
