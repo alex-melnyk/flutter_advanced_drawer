@@ -13,6 +13,7 @@ class AdvancedDrawer extends StatefulWidget {
     this.animationCurve,
     this.childDecoration,
     this.animateChildDecoration = true,
+    this.rtlOpening = false,
   }) : super(key: key);
 
   /// Child widget. (Usually widget that represent a screen)
@@ -42,6 +43,9 @@ class AdvancedDrawer extends StatefulWidget {
   /// Indicates that [childDecoration] might be animated or not.
   /// NOTICE: It may cause animation jerks.
   final bool animateChildDecoration;
+
+  /// Opening from Right-to-left.
+  final bool rtlOpening;
 
   @override
   _AdvancedDrawerState createState() => _AdvancedDrawerState();
@@ -103,7 +107,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
 
             final screenTranslateTween = Tween<Offset>(
               begin: Offset(0, 0),
-              end: Offset(maxOffset, 0),
+              end: Offset(widget.rtlOpening ? -maxOffset : maxOffset, 0),
             ).animate(widget.animationCurve != null
                 ? CurvedAnimation(
                     parent: _animationController,
@@ -215,8 +219,9 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
 
     final diff = (_freshPosition - _startPosition!).dx;
 
-    _animationController.value =
-        _offsetValue + diff / (screenSize.width * widget.openRatio);
+    _animationController.value = _offsetValue +
+        (diff / (screenSize.width * widget.openRatio)) *
+            (widget.rtlOpening ? -1 : 1);
   }
 
   void _handleDragEnd(DragEndDetails details) {
