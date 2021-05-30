@@ -1,3 +1,8 @@
+## 1.2.0
+
+* Closing drawer with open ration 1.0 fixed.
+* Bidirectional opening support added.
+
 ## 1.1.0
 
 * Animation improvements.

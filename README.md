@@ -17,6 +17,8 @@ An advanced drawer widget, that can be fully customized with size, text, color, 
 |`animationDuration`|Animation duration|*Duration*|300ms|
 |`animationCurve`|Animation curve|*Curve*|Curves.easeInOut|
 |`childDecoration`|Child container decoration|*BoxDecoration*|Shadow, BorderRadius|
+|`animateChildDecoration`|Indicates that [childDecoration] might be animated or not.|*bool*|true|
+|`rtlOpening`|Opening from Right-to-left.|*bool*|false|
 
 ## Preview
 | Preview Tap | Preview Gesture |
