@@ -130,6 +130,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                     },
                     child: Container(
                       alignment: Alignment.centerLeft,
+                      color: Colors.transparent,
                       child: widget.drawer,
                     ),
                   ),
@@ -200,26 +201,13 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
   }
 
   void _handleDragStart(DragStartDetails details) {
-    final screenSize = MediaQuery.of(context).size;
-
-    final offset = screenSize.width * (1.0 - widget.openRatio);
-
-    if (!_controller.value.visible! && details.globalPosition.dx > offset ||
-        _controller.value.visible! &&
-            details.globalPosition.dx < screenSize.width - offset) {
-      _captured = false;
-      return;
-    }
-
     _captured = true;
     _startPosition = details.globalPosition;
     _offsetValue = _animationController.value;
   }
 
   void _handleDragUpdate(DragUpdateDetails details) {
-    if (!_captured) {
-      return;
-    }
+    if (!_captured) return;
 
     final screenSize = MediaQuery.of(context).size;
 
