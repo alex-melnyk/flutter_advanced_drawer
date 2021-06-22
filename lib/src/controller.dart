@@ -18,10 +18,10 @@ class AdvancedDrawerController extends ValueNotifier<AdvancedDrawerValue> {
 
   /// Toggles drawer.
   void toggleDrawer() {
-    if (value.visible!) {
-      hideDrawer();
-    } else {
-      showDrawer();
+    if (value.visible) {
+      return hideDrawer();
     }
+
+    return showDrawer();
   }
 }

@@ -29,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
       controller: _advancedDrawerController,
       animationCurve: Curves.easeInOut,
       animationDuration: const Duration(milliseconds: 300),
+      animateChildDecoration: true,
       childDecoration: const BoxDecoration(
         // NOTICE: Uncomment if you want to add shadow behind the page.
         // Keep in mind that it may cause animation jerks.
@@ -47,9 +48,13 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: _handleMenuButtonPressed,
             icon: ValueListenableBuilder<AdvancedDrawerValue>(
               valueListenable: _advancedDrawerController,
-              builder: (context, value, child) {
-                return Icon(
-                  value.visible ? Icons.clear : Icons.menu,
+              builder: (_, value, __) {
+                return AnimatedSwitcher(
+                  duration: Duration(milliseconds: 250),
+                  child: Icon(
+                    value.visible ? Icons.clear : Icons.menu,
+                    key: ValueKey<bool>(value.visible),
+                  ),
                 );
               },
             ),
