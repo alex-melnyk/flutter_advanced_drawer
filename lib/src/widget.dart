@@ -55,9 +55,10 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     with SingleTickerProviderStateMixin {
   late AdvancedDrawerController _controller;
   late AnimationController _animationController;
-  late Animation<double> drawerScalingAnimation;
-  late Animation<double> drawerOpacityAnimation;
-  late Animation<double> screenScalingTween;
+  late Animation<double> _drawerScaleAnimation;
+  late Animation<Offset> _childSlideAnimation;
+  late Animation<double> _childScaleAnimation;
+  late Animation<Decoration> _childDecorationAnimation;
   late double _offsetValue;
   late Offset _freshPosition;
   Offset? _startPosition;
@@ -73,23 +74,35 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     _animationController = AnimationController(
       vsync: this,
       duration: widget.animationDuration,
-      value: _controller.value.visible! ? 1 : 0,
+      value: _controller.value.visible ? 1 : 0,
     );
 
-    drawerScalingAnimation = Tween<double>(
+    final parentAnimation = widget.animationCurve != null
+        ? CurvedAnimation(
+            curve: widget.animationCurve!,
+            parent: _animationController,
+          )
+        : _animationController;
+
+    _drawerScaleAnimation = Tween<double>(
       begin: 0.75,
       end: 1.0,
-    ).animate(_animationController);
+    ).animate(parentAnimation);
 
-    drawerOpacityAnimation = Tween<double>(
-      begin: 0.25,
-      end: 1.0,
-    ).animate(_animationController);
+    _childSlideAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: Offset(widget.openRatio, 0),
+    ).animate(parentAnimation);
 
-    screenScalingTween = Tween<double>(
+    _childScaleAnimation = Tween<double>(
       begin: 1.0,
       end: 0.85,
-    ).animate(_animationController);
+    ).animate(parentAnimation);
+
+    _childDecorationAnimation = DecorationTween(
+      begin: const BoxDecoration(),
+      end: widget.childDecoration,
+    ).animate(parentAnimation);
   }
 
   @override
@@ -101,105 +114,87 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
         onHorizontalDragUpdate: _handleDragUpdate,
         onHorizontalDragEnd: _handleDragEnd,
         onHorizontalDragCancel: _handleDragCancel,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final maxOffset = constraints.maxWidth * widget.openRatio;
-
-            final screenTranslateTween = Tween<Offset>(
-              begin: Offset(0, 0),
-              end: Offset(widget.rtlOpening ? -maxOffset : maxOffset, 0),
-            ).animate(widget.animationCurve != null
-                ? CurvedAnimation(
-                    parent: _animationController,
-                    curve: widget.animationCurve!,
-                  )
-                : _animationController);
-
-            return Stack(
-              children: <Widget>[
-                // -------- DRAWER
-                FractionallySizedBox(
-                  widthFactor: widget.openRatio,
-                  child: AnimatedBuilder(
-                    animation: _animationController,
-                    builder: (context, child) {
-                      return Opacity(
-                        opacity: drawerOpacityAnimation.value,
-                        child: Transform.scale(
-                          alignment: Alignment.centerRight,
-                          scale: drawerScalingAnimation.value,
-                          child: child,
-                        ),
-                      );
-                    },
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      color: Colors.transparent,
-                      child: widget.drawer,
-                    ),
-                  ),
+        child: Stack(
+          children: <Widget>[
+            // -------- DRAWER
+            FractionallySizedBox(
+              widthFactor: widget.openRatio,
+              child: ScaleTransition(
+                scale: _drawerScaleAnimation,
+                alignment: Alignment.centerRight,
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  color: Colors.transparent,
+                  child: widget.drawer,
                 ),
-                // -------- CHILD
-                AnimatedBuilder(
-                  animation: _animationController,
-                  builder: (context, child) {
-                    return Transform.translate(
-                      offset: screenTranslateTween.value,
-                      child: Transform.scale(
-                        alignment: Alignment.centerLeft,
-                        scale: screenScalingTween.value,
-                        child: Container(
-                          clipBehavior: Clip.antiAlias,
-                          decoration: widget.animateChildDecoration
-                              ? BoxDecoration.lerp(
-                                  const BoxDecoration(
-                                    boxShadow: const [],
-                                    borderRadius: BorderRadius.zero,
-                                  ),
-                                  widget.childDecoration,
-                                  _animationController.value,
-                                )
-                              : widget.childDecoration,
-                          child: child,
+              ),
+            ),
+            // -------- CHILD
+            SlideTransition(
+              position: _childSlideAnimation,
+              textDirection:
+                  widget.rtlOpening ? TextDirection.rtl : TextDirection.ltr,
+              child: ScaleTransition(
+                scale: _childScaleAnimation,
+                child: Builder(
+                  builder: (_) {
+                    final childStack = Stack(
+                      children: [
+                        widget.child,
+                        ValueListenableBuilder<AdvancedDrawerValue>(
+                          valueListenable: _controller,
+                          builder: (_, value, __) {
+                            if (!value.visible) {
+                              return const SizedBox();
+                            }
+
+                            return Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: _controller.hideDrawer,
+                                highlightColor: Colors.transparent,
+                                child: Container(),
+                              ),
+                            );
+                          },
                         ),
-                      ),
+                      ],
+                    );
+
+                    if (widget.animateChildDecoration &&
+                        widget.childDecoration != null) {
+                      return AnimatedBuilder(
+                        animation: _childDecorationAnimation,
+                        builder: (_, child) {
+                          return Container(
+                            clipBehavior: Clip.antiAlias,
+                            decoration: _childDecorationAnimation.value,
+                            child: child,
+                          );
+                        },
+                        child: childStack,
+                      );
+                    }
+
+                    return Container(
+                      clipBehavior: widget.childDecoration != null
+                          ? Clip.antiAlias
+                          : Clip.none,
+                      decoration: widget.childDecoration,
+                      child: childStack,
                     );
                   },
-                  child: ValueListenableBuilder<AdvancedDrawerValue>(
-                    valueListenable: _controller,
-                    builder: (_, value, child) {
-                      if (value.visible!) {
-                        return Stack(
-                          children: [
-                            child!,
-                            if (value.visible!)
-                              Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: _controller.hideDrawer,
-                                  highlightColor: Colors.transparent,
-                                  child: Container(),
-                                ),
-                              ),
-                          ],
-                        );
-                      }
-
-                      return child!;
-                    },
-                    child: widget.child,
-                  ),
                 ),
-              ],
-            );
-          },
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
   void handleControllerChanged() {
-    _controller.value.visible!
+    _controller.value.visible
         ? _animationController.forward()
         : _animationController.reverse();
   }
@@ -228,26 +223,24 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     if (!_captured) return;
 
     _captured = false;
-    _startPosition = null;
 
     if (_animationController.value >= 0.5) {
-      _controller.showDrawer();
-
-      if (_controller.value.visible!) {
-        _animationController.animateTo(1);
+      if (_controller.value.visible) {
+        _animationController.forward();
+      } else {
+        _controller.showDrawer();
       }
     } else {
-      _controller.hideDrawer();
-
-      if (!_controller.value.visible!) {
-        _animationController.animateTo(0);
+      if (!_controller.value.visible) {
+        _animationController.reverse();
+      } else {
+        _controller.hideDrawer();
       }
     }
   }
 
   void _handleDragCancel() {
     _captured = false;
-    _startPosition = null;
   }
 
   @override

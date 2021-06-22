@@ -1,3 +1,7 @@
+## 1.2.1
+
+* Performance improvements
+
 ## 1.2.0
 
 * Closing drawer with open ration 1.0 fixed.
