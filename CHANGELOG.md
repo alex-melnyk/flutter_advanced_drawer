@@ -1,3 +1,8 @@
+## 1.2.2
+
+* Hidden drawer content with rtlOpening (true) fixed.
+* Example updated.
+
 ## 1.2.1
 
 * Performance improvements
