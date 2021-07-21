@@ -31,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
       animationDuration: const Duration(milliseconds: 300),
       animateChildDecoration: true,
       rtlOpening: false,
+      disabledGestures: false,
       childDecoration: const BoxDecoration(
         // NOTICE: Uncomment if you want to add shadow behind the page.
         // Keep in mind that it may cause animation jerks.

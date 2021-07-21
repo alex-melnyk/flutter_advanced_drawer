@@ -14,6 +14,7 @@ class AdvancedDrawer extends StatefulWidget {
     this.childDecoration,
     this.animateChildDecoration = true,
     this.rtlOpening = false,
+    this.disabledGestures = false,
   }) : super(key: key);
 
   /// Child widget. (Usually widget that represent a screen)
@@ -46,6 +47,9 @@ class AdvancedDrawer extends StatefulWidget {
 
   /// Opening from Right-to-left.
   final bool rtlOpening;
+
+  /// Disable gestures.
+  final bool disabledGestures;
 
   @override
   _AdvancedDrawerState createState() => _AdvancedDrawerState();
@@ -202,6 +206,8 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
   }
 
   void _handleDragStart(DragStartDetails details) {
+    if (widget.disabledGestures) return;
+
     _captured = true;
     _startPosition = details.globalPosition;
     _offsetValue = _animationController.value;
