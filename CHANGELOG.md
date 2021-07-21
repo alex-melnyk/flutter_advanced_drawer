@@ -1,3 +1,7 @@
+## 1.2.3
+
+* "disabledGestures" option added to disable gestures.
+
 ## 1.2.2
 
 * Hidden drawer content with rtlOpening (true) fixed.
