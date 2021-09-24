@@ -114,10 +114,10 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     return Material(
       color: widget.backdropColor,
       child: GestureDetector(
-        onHorizontalDragStart: _handleDragStart,
-        onHorizontalDragUpdate: _handleDragUpdate,
-        onHorizontalDragEnd: _handleDragEnd,
-        onHorizontalDragCancel: _handleDragCancel,
+        onHorizontalDragStart: widget.disableGestures?null:_handleDragStart,
+        onHorizontalDragUpdate: widget.disableGestures?null:_handleDragUpdate,
+        onHorizontalDragEnd: widget.disableGestures?null:_handleDragEnd,
+        onHorizontalDragCancel: widget.disableGestures?null:_handleDragCancel,
         child: Container(
           color: Colors.transparent,
           child: Stack(
@@ -206,7 +206,6 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
   }
 
   void _handleDragStart(DragStartDetails details) {
-    if (widget.disabledGestures) return;
 
     _captured = true;
     _startPosition = details.globalPosition;
