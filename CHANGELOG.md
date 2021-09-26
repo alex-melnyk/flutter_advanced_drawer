@@ -1,3 +1,7 @@
+## 1.2.3+1
+
+* Disabling gestures fixed.
+
 ## 1.2.3
 
 * "disabledGestures" option added to disable gestures.

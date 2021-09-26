@@ -114,22 +114,29 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     return Material(
       color: widget.backdropColor,
       child: GestureDetector(
-        onHorizontalDragStart: widget.disableGestures?null:_handleDragStart,
-        onHorizontalDragUpdate: widget.disableGestures?null:_handleDragUpdate,
-        onHorizontalDragEnd: widget.disableGestures?null:_handleDragEnd,
-        onHorizontalDragCancel: widget.disableGestures?null:_handleDragCancel,
+        onHorizontalDragStart:
+            widget.disabledGestures ? null : _handleDragStart,
+        onHorizontalDragUpdate:
+            widget.disabledGestures ? null : _handleDragUpdate,
+        onHorizontalDragEnd: widget.disabledGestures ? null : _handleDragEnd,
+        onHorizontalDragCancel:
+            widget.disabledGestures ? null : _handleDragCancel,
         child: Container(
           color: Colors.transparent,
           child: Stack(
             children: <Widget>[
               // -------- DRAWER
               Align(
-                alignment: widget.rtlOpening ? Alignment.centerRight : Alignment.centerLeft,
+                alignment: widget.rtlOpening
+                    ? Alignment.centerRight
+                    : Alignment.centerLeft,
                 child: FractionallySizedBox(
                   widthFactor: widget.openRatio,
                   child: ScaleTransition(
                     scale: _drawerScaleAnimation,
-                    alignment: widget.rtlOpening ? Alignment.centerLeft : Alignment.centerRight,
+                    alignment: widget.rtlOpening
+                        ? Alignment.centerLeft
+                        : Alignment.centerRight,
                     child: widget.drawer,
                   ),
                 ),
@@ -206,7 +213,6 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
   }
 
   void _handleDragStart(DragStartDetails details) {
-
     _captured = true;
     _startPosition = details.globalPosition;
     _offsetValue = _animationController.value;
