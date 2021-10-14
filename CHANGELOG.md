@@ -1,3 +1,7 @@
+## 1.2.4
+
+* Animation after dispose fixed.
+
 ## 1.2.3+1
 
 * Disabling gestures fixed.
