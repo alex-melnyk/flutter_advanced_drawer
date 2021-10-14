@@ -57,12 +57,12 @@ class AdvancedDrawer extends StatefulWidget {
 
 class _AdvancedDrawerState extends State<AdvancedDrawer>
     with SingleTickerProviderStateMixin {
-  late AdvancedDrawerController _controller;
-  late AnimationController _animationController;
-  late Animation<double> _drawerScaleAnimation;
-  late Animation<Offset> _childSlideAnimation;
-  late Animation<double> _childScaleAnimation;
-  late Animation<Decoration> _childDecorationAnimation;
+  late final AdvancedDrawerController _controller;
+  late final AnimationController _animationController;
+  late final Animation<double> _drawerScaleAnimation;
+  late final Animation<Offset> _childSlideAnimation;
+  late final Animation<double> _childScaleAnimation;
+  late final Animation<Decoration> _childDecorationAnimation;
   late double _offsetValue;
   late Offset _freshPosition;
   Offset? _startPosition;
@@ -258,6 +258,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
 
   @override
   void dispose() {
+    _controller.removeListener(handleControllerChanged);
     _animationController.dispose();
 
     if (widget.controller == null) {
