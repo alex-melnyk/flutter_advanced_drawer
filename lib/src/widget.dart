@@ -52,7 +52,7 @@ class AdvancedDrawer extends StatefulWidget {
   /// Disable gestures.
   final bool disabledGestures;
 
-  /// Controller that controlls widget animation.
+  /// Controller that controls widget animation.
   final AnimationController? animationController;
 
   @override
@@ -270,7 +270,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
       _controller.dispose();
     }
 
-    if (widget.animationContoller == null) {
+    if (widget.animationController == null) {
       _animationController.dispose();
     }
 
