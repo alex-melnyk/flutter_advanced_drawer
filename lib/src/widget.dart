@@ -15,6 +15,7 @@ class AdvancedDrawer extends StatefulWidget {
     this.animateChildDecoration = true,
     this.rtlOpening = false,
     this.disabledGestures = false,
+    this.animationController,
   }) : super(key: key);
 
   /// Child widget. (Usually widget that represent a screen)
@@ -51,6 +52,9 @@ class AdvancedDrawer extends StatefulWidget {
   /// Disable gestures.
   final bool disabledGestures;
 
+  /// Controller that controlls widget animation.
+  final AnimationController? animationController;
+
   @override
   _AdvancedDrawerState createState() => _AdvancedDrawerState();
 }
@@ -75,11 +79,13 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     _controller = widget.controller ?? AdvancedDrawerController();
     _controller.addListener(handleControllerChanged);
 
-    _animationController = AnimationController(
-      vsync: this,
-      duration: widget.animationDuration,
-      value: _controller.value.visible ? 1 : 0,
-    );
+    _animationController = widget.animationController ??
+        AnimationController(
+          vsync: this,
+          value: _controller.value.visible ? 1 : 0,
+        );
+
+    _animationController.duration = widget.animationDuration;
 
     final parentAnimation = widget.animationCurve != null
         ? CurvedAnimation(
@@ -259,10 +265,13 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
   @override
   void dispose() {
     _controller.removeListener(handleControllerChanged);
-    _animationController.dispose();
 
     if (widget.controller == null) {
       _controller.dispose();
+    }
+
+    if (widget.animationContoller == null) {
+      _animationController.dispose();
     }
 
     super.dispose();
