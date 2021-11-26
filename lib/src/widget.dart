@@ -265,10 +265,13 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
   @override
   void dispose() {
     _controller.removeListener(handleControllerChanged);
-    _animationController.dispose();
 
     if (widget.controller == null) {
       _controller.dispose();
+    }
+
+    if (widget.animationContoller == null) {
+      _animationController.dispose();
     }
 
     super.dispose();
