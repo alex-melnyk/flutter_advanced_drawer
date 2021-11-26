@@ -1,3 +1,7 @@
+## 1.3.0
+
+* Animation controller could be passed via props.
+
 ## 1.2.4
 
 * Animation after dispose fixed.
