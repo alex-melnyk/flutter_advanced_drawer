@@ -1,3 +1,7 @@
+## 1.3.1
+
+* The openScale parameter added to manage child scale.
+
 ## 1.3.0
 
 * Animation controller could be passed via props.
