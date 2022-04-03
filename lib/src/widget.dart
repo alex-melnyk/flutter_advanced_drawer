@@ -127,7 +127,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
 
   @override
   Widget build(BuildContext context) {
-    deviceSize ??= MediaQuery.of(context).size;
+    deviceSize = MediaQuery.of(context).size;
     return Material(
       color: widget.backdropColor,
       child: GestureDetector(
@@ -230,7 +230,6 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
   }
 
   void _handleDragStart(DragStartDetails details) {
-    // print(' _controller.value.visible : ${_controller.value.visible}');
     if (widget.disabledGesturesOnDrawer &&
         _controller.value.visible &&
         details.globalPosition.dx / deviceSize.width < widget.openRatio) {
