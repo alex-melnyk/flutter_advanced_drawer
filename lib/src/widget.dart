@@ -73,15 +73,15 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
   late final Animation<Decoration> _childDecorationAnimation;
   late double _offsetValue;
   late Offset _freshPosition;
-  Offset? _startPosition;
   bool _captured = false;
+  Offset? _startPosition;
 
   @override
   void initState() {
     super.initState();
 
     _controller = widget.controller ?? AdvancedDrawerController();
-    _controller.addListener(handleControllerChanged);
+    _controller.addListener(_handleControllerChanged);
 
     _animationController = widget.animationController ??
         AnimationController(
@@ -135,7 +135,6 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
           color: Colors.transparent,
           child: Stack(
             children: <Widget>[
-              // -------- DRAWER
               Align(
                 alignment: widget.rtlOpening
                     ? Alignment.centerRight
@@ -151,7 +150,6 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                   ),
                 ),
               ),
-              // -------- CHILD
               SlideTransition(
                 position: _childSlideAnimation,
                 textDirection:
@@ -216,7 +214,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     );
   }
 
-  void handleControllerChanged() {
+  void _handleControllerChanged() {
     _controller.value.visible
         ? _animationController.forward()
         : _animationController.reverse();
@@ -268,7 +266,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
 
   @override
   void dispose() {
-    _controller.removeListener(handleControllerChanged);
+    _controller.removeListener(_handleControllerChanged);
 
     if (widget.controller == null) {
       _controller.dispose();
