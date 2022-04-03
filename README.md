@@ -14,6 +14,7 @@ An advanced drawer widget, that can be fully customized with size, text, color, 
 |`controller`|Widget controller|*AdvancedDrawerController*| |
 |`backdropColor`|Backdrop color|*Color*| |
 |`openRatio`|Opening ratio|*double*|0.75|
+|`openScale`|Opening child scale factor|*double*|0.85|
 |`animationDuration`|Animation duration|*Duration*|300ms|
 |`animationCurve`|Animation curve|*Curve*|Curves.easeInOut|
 |`childDecoration`|Child container decoration|*BoxDecoration*|Shadow, BorderRadius|

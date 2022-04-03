@@ -9,6 +9,7 @@ class AdvancedDrawer extends StatefulWidget {
     this.controller,
     this.backdropColor,
     this.openRatio = 0.75,
+    this.openScale = 0.85,
     this.animationDuration = const Duration(milliseconds: 250),
     this.animationCurve,
     this.childDecoration,
@@ -32,6 +33,9 @@ class AdvancedDrawer extends StatefulWidget {
 
   /// Opening ratio.
   final double openRatio;
+
+  /// Opening ratio.
+  final double openScale;
 
   /// Animation duration.
   final Duration animationDuration;
@@ -87,12 +91,12 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
 
     _animationController.duration = widget.animationDuration;
 
-    final parentAnimation = widget.animationCurve != null
-        ? CurvedAnimation(
+    final parentAnimation = widget.animationCurve == null
+        ? _animationController
+        : CurvedAnimation(
             curve: widget.animationCurve!,
             parent: _animationController,
-          )
-        : _animationController;
+          );
 
     _drawerScaleAnimation = Tween<double>(
       begin: 0.75,
@@ -106,7 +110,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
 
     _childScaleAnimation = Tween<double>(
       begin: 1.0,
-      end: 0.85,
+      end: widget.openScale,
     ).animate(parentAnimation);
 
     _childDecorationAnimation = DecorationTween(
