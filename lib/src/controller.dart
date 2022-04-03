@@ -9,11 +9,13 @@ class AdvancedDrawerController extends ValueNotifier<AdvancedDrawerValue> {
   /// Shows drawer.
   void showDrawer() {
     value = AdvancedDrawerValue.visible();
+    notifyListeners();
   }
 
   /// Hides drawer.
   void hideDrawer() {
     value = AdvancedDrawerValue.hidden();
+    notifyListeners();
   }
 
   /// Toggles drawer.
