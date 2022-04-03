@@ -1,3 +1,7 @@
+## 1.3.2
+
+* Drawer stuck on back drag fixed.
+
 ## 1.3.1
 
 * The openScale parameter added to manage child scale.
