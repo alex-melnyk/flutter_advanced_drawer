@@ -16,6 +16,7 @@ class AdvancedDrawer extends StatefulWidget {
     this.animateChildDecoration = true,
     this.rtlOpening = false,
     this.disabledGestures = false,
+    this.disabledGesturesOnDrawer = false,
     this.animationController,
   }) : super(key: key);
 
@@ -55,6 +56,9 @@ class AdvancedDrawer extends StatefulWidget {
 
   /// Disable gestures.
   final bool disabledGestures;
+
+  /// Disable gestures on drawer view.
+  final bool disabledGesturesOnDrawer;
 
   /// Controller that controls widget animation.
   final AnimationController? animationController;
@@ -119,8 +123,11 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     ).animate(parentAnimation);
   }
 
+  late Size deviceSize;
+
   @override
   Widget build(BuildContext context) {
+    deviceSize ??= MediaQuery.of(context).size;
     return Material(
       color: widget.backdropColor,
       child: GestureDetector(
@@ -223,6 +230,12 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
   }
 
   void _handleDragStart(DragStartDetails details) {
+    // print(' _controller.value.visible : ${_controller.value.visible}');
+    if (widget.disabledGesturesOnDrawer &&
+        _controller.value.visible &&
+        details.globalPosition.dx / deviceSize.width < widget.openRatio) {
+      return;
+    }
     _captured = true;
     _startPosition = details.globalPosition;
     _offsetValue = _animationController.value;
