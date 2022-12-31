@@ -8,6 +8,7 @@ class AdvancedDrawer extends StatefulWidget {
     required this.drawer,
     this.controller,
     this.backdropColor,
+    this.childCoverColor,
     this.openRatio = 0.75,
     this.openScale = 0.85,
     this.animationDuration = const Duration(milliseconds: 250),
@@ -30,6 +31,9 @@ class AdvancedDrawer extends StatefulWidget {
 
   /// Backdrop color.
   final Color? backdropColor;
+
+  /// Child cover color. (Opacity animation as the child slides)
+  final Color? childCoverColor;
 
   /// Opening ratio.
   final double openRatio;
@@ -69,6 +73,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
   late final AnimationController _animationController;
   late final Animation<double> _drawerScaleAnimation;
   late final Animation<Offset> _childSlideAnimation;
+  late final Animation<double> _coverOpacityAnimation;
   late final Animation<double> _childScaleAnimation;
   late final Animation<Decoration> _childDecorationAnimation;
   late double _offsetValue;
@@ -106,6 +111,11 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     _childSlideAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: Offset(widget.openRatio, 0),
+    ).animate(parentAnimation);
+
+    _coverOpacityAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
     ).animate(parentAnimation);
 
     _childScaleAnimation = Tween<double>(
@@ -178,6 +188,18 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                               );
                             },
                           ),
+                          FadeTransition(
+                            opacity: _coverOpacityAnimation,
+                            child: SizedBox.expand(
+                                child: IgnorePointer(
+                                    child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                      color: widget.childCoverColor
+                                    ),
+                                  )
+                                ),
+                              )
+                            ),
                         ],
                       );
 
