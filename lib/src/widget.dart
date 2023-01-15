@@ -123,91 +123,91 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
   Widget build(BuildContext context) {
     return Material(
       color: widget.backdropColor,
-      child: GestureDetector(
-        onHorizontalDragStart:
-            widget.disabledGestures ? null : _handleDragStart,
-        onHorizontalDragUpdate:
-            widget.disabledGestures ? null : _handleDragUpdate,
-        onHorizontalDragEnd: widget.disabledGestures ? null : _handleDragEnd,
-        onHorizontalDragCancel:
-            widget.disabledGestures ? null : _handleDragCancel,
-        child: Container(
-          color: Colors.transparent,
-          child: Stack(
-            children: <Widget>[
-              Align(
-                alignment: widget.rtlOpening
-                    ? Alignment.centerRight
-                    : Alignment.centerLeft,
-                child: FractionallySizedBox(
-                  widthFactor: widget.openRatio,
-                  child: ScaleTransition(
-                    scale: _drawerScaleAnimation,
-                    alignment: widget.rtlOpening
-                        ? Alignment.centerLeft
-                        : Alignment.centerRight,
-                    child: widget.drawer,
+      child: IgnorePointer(
+        ignoring: widget.disabledGestures,
+        child: GestureDetector(
+          onHorizontalDragStart: _handleDragStart,
+          onHorizontalDragUpdate: _handleDragUpdate,
+          onHorizontalDragEnd: _handleDragEnd,
+          onHorizontalDragCancel: _handleDragCancel,
+          child: Container(
+            color: Colors.transparent,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: widget.rtlOpening
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
+                  child: FractionallySizedBox(
+                    widthFactor: widget.openRatio,
+                    child: ScaleTransition(
+                      scale: _drawerScaleAnimation,
+                      alignment: widget.rtlOpening
+                          ? Alignment.centerLeft
+                          : Alignment.centerRight,
+                      child: widget.drawer,
+                    ),
                   ),
                 ),
-              ),
-              SlideTransition(
-                position: _childSlideAnimation,
-                textDirection:
-                    widget.rtlOpening ? TextDirection.rtl : TextDirection.ltr,
-                child: ScaleTransition(
-                  scale: _childScaleAnimation,
-                  child: Builder(
-                    builder: (_) {
-                      final childStack = Stack(
-                        children: [
-                          widget.child,
-                          ValueListenableBuilder<AdvancedDrawerValue>(
-                            valueListenable: _controller,
-                            builder: (_, value, __) {
-                              if (!value.visible) {
-                                return const SizedBox();
-                              }
+                SlideTransition(
+                  position: _childSlideAnimation,
+                  textDirection:
+                      widget.rtlOpening ? TextDirection.rtl : TextDirection.ltr,
+                  child: ScaleTransition(
+                    scale: _childScaleAnimation,
+                    child: Builder(
+                      builder: (_) {
+                        final childStack = Stack(
+                          children: [
+                            widget.child,
+                            ValueListenableBuilder<AdvancedDrawerValue>(
+                              valueListenable: _controller,
+                              builder: (_, value, __) {
+                                if (!value.visible) {
+                                  return const SizedBox();
+                                }
 
-                              return Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: _controller.hideDrawer,
-                                  highlightColor: Colors.transparent,
-                                  child: Container(),
-                                ),
+                                return Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: _controller.hideDrawer,
+                                    highlightColor: Colors.transparent,
+                                    child: Container(),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        );
+
+                        if (widget.animateChildDecoration &&
+                            widget.childDecoration != null) {
+                          return AnimatedBuilder(
+                            animation: _childDecorationAnimation,
+                            builder: (_, child) {
+                              return Container(
+                                clipBehavior: Clip.antiAlias,
+                                decoration: _childDecorationAnimation.value,
+                                child: child,
                               );
                             },
-                          ),
-                        ],
-                      );
+                            child: childStack,
+                          );
+                        }
 
-                      if (widget.animateChildDecoration &&
-                          widget.childDecoration != null) {
-                        return AnimatedBuilder(
-                          animation: _childDecorationAnimation,
-                          builder: (_, child) {
-                            return Container(
-                              clipBehavior: Clip.antiAlias,
-                              decoration: _childDecorationAnimation.value,
-                              child: child,
-                            );
-                          },
+                        return Container(
+                          clipBehavior: widget.childDecoration != null
+                              ? Clip.antiAlias
+                              : Clip.none,
+                          decoration: widget.childDecoration,
                           child: childStack,
                         );
-                      }
-
-                      return Container(
-                        clipBehavior: widget.childDecoration != null
-                            ? Clip.antiAlias
-                            : Clip.none,
-                        decoration: widget.childDecoration,
-                        child: childStack,
-                      );
-                    },
+                      },
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

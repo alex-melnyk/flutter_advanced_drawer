@@ -1,3 +1,7 @@
+## 1.3.3
+
+* Disable with IgnorePointer widget added.
+
 ## 1.3.2
 
 * Drawer stuck on back drag fixed.

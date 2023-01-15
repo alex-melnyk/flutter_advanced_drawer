@@ -1,4 +1,4 @@
-package io.alexmelnyk.flutter_advanced_drawer_example
+package io.alexmelnyk.example
 
 import io.flutter.embedding.android.FlutterActivity
 
