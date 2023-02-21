@@ -1,3 +1,9 @@
+## 1.3.4
+
+* Hot reload + state update support added.
+* Added RepaintBoundary for additional performance.
+* Removed IgnorePointer and added disabling drag events on GestureDetector.
+
 ## 1.3.3
 
 * Disable with IgnorePointer widget added.
