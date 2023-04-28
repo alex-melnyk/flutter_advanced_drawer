@@ -1,3 +1,7 @@
+## 1.3.5
+
+* Added backdrop field to set custom background
+
 ## 1.3.4
 
 * Hot reload + state update support added.

@@ -25,7 +25,17 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return AdvancedDrawer(
-      backdropColor: Colors.blueGrey,
+      backdrop: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.blueGrey, Colors.blueGrey.withOpacity(0.2)],
+          ),
+        ),
+      ),
       controller: _advancedDrawerController,
       animationCurve: Curves.easeInOut,
       animationDuration: const Duration(milliseconds: 300),

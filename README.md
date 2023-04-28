@@ -13,6 +13,7 @@ An advanced drawer widget, that can be fully customized with size, text, color, 
 |`drawer`|Drawer widget|*Widget*|required|
 |`controller`|Widget controller|*AdvancedDrawerController*| |
 |`backdropColor`|Backdrop color|*Color*| |
+|`backdrop`|Backdrop widget for custom background|*Widget*| |
 |`openRatio`|Opening ratio|*double*|0.75|
 |`openScale`|Opening child scale factor|*double*|0.85|
 |`animationDuration`|Animation duration|*Duration*|300ms|

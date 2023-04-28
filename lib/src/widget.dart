@@ -8,6 +8,7 @@ class AdvancedDrawer extends StatefulWidget {
     required this.drawer,
     this.controller,
     this.backdropColor,
+    this.backdrop,
     this.openRatio = 0.75,
     this.openScale = 0.85,
     this.animationDuration = const Duration(milliseconds: 250),
@@ -30,6 +31,9 @@ class AdvancedDrawer extends StatefulWidget {
 
   /// Backdrop color.
   final Color? backdropColor;
+
+  /// Backdrop widget for custom background.
+  final Widget? backdrop;
 
   /// Opening ratio.
   final double openRatio;
@@ -111,6 +115,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
           color: Colors.transparent,
           child: Stack(
             children: [
+              if (widget.backdrop != null) widget.backdrop!,
               Align(
                 alignment: widget.rtlOpening
                     ? Alignment.centerRight
