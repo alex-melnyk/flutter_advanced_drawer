@@ -1,3 +1,7 @@
+## 1.3.6
+
+* Check context mount status.
+
 ## 1.3.5
 
 * Added backdrop field to set custom background
