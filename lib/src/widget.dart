@@ -138,7 +138,9 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                 textDirection:
                     widget.rtlOpening ? TextDirection.rtl : TextDirection.ltr,
                 child: ScaleTransition(
-                  alignment: Alignment.centerLeft,
+                  alignment: widget.rtlOpening
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
                   scale: _childScaleAnimation,
                   child: Builder(
                     builder: (_) {
