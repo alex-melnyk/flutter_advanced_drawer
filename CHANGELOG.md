@@ -1,3 +1,7 @@
+## 1.3.7
+
+* Align child window to the left even when scaled.
+
 ## 1.3.6
 
 * Check context mount status.

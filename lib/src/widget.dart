@@ -138,6 +138,9 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                 textDirection:
                     widget.rtlOpening ? TextDirection.rtl : TextDirection.ltr,
                 child: ScaleTransition(
+                  alignment: widget.rtlOpening
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
                   scale: _childScaleAnimation,
                   child: Builder(
                     builder: (_) {
@@ -246,14 +249,14 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
   }
 
   void _handleControllerChanged() {
-  // Check if the widget is still mounted
-  if (context.mounted) {
-    // If the value of _controller is visible, forward the animation; otherwise, reverse it
-    _controller.value.visible
-        ? _animationController.forward()
-        : _animationController.reverse();
+    // Check if the widget is still mounted
+    if (context.mounted) {
+      // If the value of _controller is visible, forward the animation; otherwise, reverse it
+      _controller.value.visible
+          ? _animationController.forward()
+          : _animationController.reverse();
+    }
   }
-}
 
   void _handleDragStart(DragStartDetails details) {
     _captured = true;
