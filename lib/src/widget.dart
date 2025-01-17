@@ -12,6 +12,7 @@ class AdvancedDrawer extends StatefulWidget {
     this.openRatio = 0.75,
     this.openScale = 0.85,
     this.initialDrawerScale = 0.75,
+    this.drawerSlideRatio = 0,
     this.animationDuration = const Duration(milliseconds: 250),
     this.animationCurve,
     this.childDecoration,
@@ -45,6 +46,11 @@ class AdvancedDrawer extends StatefulWidget {
   /// How large the drawer segment should scale from.
   /// Set to 1 to disable drawer segment scale effect.
   final double initialDrawerScale;
+
+  /// How far the drawer segment should slide with the content
+  /// 0 = no slide distance
+  /// 1 = slide from completely off screen
+  final double drawerSlideRatio;
 
   /// Animation duration.
   final Duration animationDuration;
@@ -82,6 +88,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
   late Animation<double> _drawerScaleAnimation;
   late Animation<Offset> _childSlideAnimation;
   late Animation<double> _childScaleAnimation;
+  late Animation<Offset> _drawerSlideAnimation;
   late Animation<Decoration> _childDecorationAnimation;
 
   late double _offsetValue;
@@ -125,15 +132,18 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                 alignment: widget.rtlOpening
                     ? Alignment.centerRight
                     : Alignment.centerLeft,
-                child: FractionallySizedBox(
-                  widthFactor: widget.openRatio,
-                  child: ScaleTransition(
-                    scale: _drawerScaleAnimation,
-                    alignment: widget.rtlOpening
-                        ? Alignment.centerLeft
-                        : Alignment.centerRight,
-                    child: RepaintBoundary(
-                      child: widget.drawer,
+                child: SlideTransition(
+                  position: _drawerSlideAnimation,
+                  child: FractionallySizedBox(
+                    widthFactor: widget.openRatio,
+                    child: ScaleTransition(
+                      scale: _drawerScaleAnimation,
+                      alignment: widget.rtlOpening
+                          ? Alignment.centerLeft
+                          : Alignment.centerRight,
+                      child: RepaintBoundary(
+                        child: widget.drawer,
+                      ),
                     ),
                   ),
                 ),
@@ -236,6 +246,11 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     _drawerScaleAnimation = Tween<double>(
       begin: widget.initialDrawerScale,
       end: 1.0,
+    ).animate(parentAnimation);
+
+    _drawerSlideAnimation = Tween<Offset>(
+      begin: Offset(-widget.drawerSlideRatio, 0),
+      end: Offset.zero,
     ).animate(parentAnimation);
 
     _childSlideAnimation = Tween<Offset>(
