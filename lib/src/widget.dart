@@ -11,6 +11,7 @@ class AdvancedDrawer extends StatefulWidget {
     this.backdrop,
     this.openRatio = 0.75,
     this.openScale = 0.85,
+    this.initialDrawerScale = 0.75,
     this.animationDuration = const Duration(milliseconds: 250),
     this.animationCurve,
     this.childDecoration,
@@ -40,6 +41,10 @@ class AdvancedDrawer extends StatefulWidget {
 
   /// Opening ratio.
   final double openScale;
+
+  /// How large the drawer segment should scale from.
+  /// Set to 1 to disable drawer segment scale effect.
+  final double initialDrawerScale;
 
   /// Animation duration.
   final Duration animationDuration;
@@ -228,7 +233,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
           );
 
     _drawerScaleAnimation = Tween<double>(
-      begin: 0.75,
+      begin: widget.initialDrawerScale,
       end: 1.0,
     ).animate(parentAnimation);
 
