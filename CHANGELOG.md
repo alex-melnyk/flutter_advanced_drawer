@@ -1,3 +1,8 @@
+## 1.4.0
+
+* Added "initialDrawerScale" parameter to set the initial scale of the drawer.
+* Added "drawerSlideRatio" parameter to set the slide ratio of the drawer.
+
 ## 1.3.7
 
 * Align child window to the left even when scaled.
