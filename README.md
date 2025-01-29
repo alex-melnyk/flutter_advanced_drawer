@@ -23,6 +23,7 @@ An advanced drawer widget, that can be fully customized with size, text, color, 
 |`rtlOpening`|Opening from Right-to-left.|*bool*|false|
 |`disabledGestures`|Disable gestures.|*bool*|false|
 |`initialDrawerScale`|How large the drawer segment should scale from.|*double*|0.75|
+|`drawerSlideRatio`|How far the drawer segment should slide with the content.|*double*|0|
 
 ## Preview
 | Preview Tap | Preview Gesture |
