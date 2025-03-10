@@ -136,39 +136,45 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
           color: Colors.transparent,
           child: Stack(
             children: [
-              if (widget.backdrop != null) widget.backdrop!,
-              Align(
-                alignment: widget.rtlOpening
-                    ? Alignment.centerRight
-                    : Alignment.centerLeft,
-                child: SlideTransition(
-                  position: _drawerSlideAnimation,
-                  child: FractionallySizedBox(
-                    widthFactor: widget.openRatio,
-                    child: ScaleTransition(
-                      scale: _drawerScaleAnimation,
-                      alignment: widget.rtlOpening
-                          ? Alignment.centerLeft
-                          : Alignment.centerRight,
-                      child: RepaintBoundary(
-                        child: ValueListenableBuilder<AdvancedDrawerValue>(
-                            valueListenable: _controller,
-                            builder: (_, value, __) {
-                              return ExcludeFocus(
-                                excluding: !value.visible,
-                                child: Semantics(
-                                  excludeSemantics: !value.visible,
-                                  container: true,
-                                  explicitChildNodes: true,
-                                  child: widget.drawer,
+              ValueListenableBuilder<AdvancedDrawerValue>(
+                  valueListenable: _controller,
+                  builder: (_, value, __) {
+                    return ExcludeFocus(
+                      excluding: !value.visible,
+                      child: ExcludeSemantics(
+                        excluding: !value.visible,
+                        child: Stack(
+                          children: [
+                            if (widget.backdrop != null) widget.backdrop!,
+                            Align(
+                              alignment: widget.rtlOpening
+                                  ? Alignment.centerRight
+                                  : Alignment.centerLeft,
+                              child: SlideTransition(
+                                position: _drawerSlideAnimation,
+                                child: FractionallySizedBox(
+                                  widthFactor: widget.openRatio,
+                                  child: ScaleTransition(
+                                    scale: _drawerScaleAnimation,
+                                    alignment: widget.rtlOpening
+                                        ? Alignment.centerLeft
+                                        : Alignment.centerRight,
+                                    child: RepaintBoundary(
+                                      child: Semantics(
+                                        container: true,
+                                        explicitChildNodes: true,
+                                        child: widget.drawer,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              );
-                            }),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              ),
+                    );
+                  }),
               SlideTransition(
                 position: _childSlideAnimation,
                 textDirection:
@@ -186,8 +192,11 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                           ExcludeFocus(
                             excluding: value.visible,
                             child: ExcludeSemantics(
-                                excluding: value.visible,
-                                child: RepaintBoundary(child: widget.child)),
+                              excluding: value.visible,
+                              child: RepaintBoundary(
+                                child: widget.child,
+                              ),
+                            ),
                           ),
                           Visibility(
                             visible: value.visible,
