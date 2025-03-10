@@ -273,7 +273,9 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     // If widget is not mounted do nothing
     if (!mounted) return;
     // If the value of _controller is visible, forward the animation; otherwise, reverse it
-    _controller.value.visible ? _animationController.forward() : _animationController.reverse();
+    _controller.value.visible
+        ? _animationController.forward()
+        : _animationController.reverse();
   }
 
   void _handleDragStart(DragStartDetails details) {
