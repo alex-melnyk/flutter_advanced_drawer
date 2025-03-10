@@ -137,44 +137,46 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
           child: Stack(
             children: [
               ValueListenableBuilder<AdvancedDrawerValue>(
-                  valueListenable: _controller,
-                  builder: (_, value, __) {
-                    return ExcludeFocus(
+                valueListenable: _controller,
+                builder: (_, value, child) {
+                  return ExcludeFocus(
+                    excluding: !value.visible,
+                    child: ExcludeSemantics(
                       excluding: !value.visible,
-                      child: ExcludeSemantics(
-                        excluding: !value.visible,
-                        child: Stack(
-                          children: [
-                            if (widget.backdrop != null) widget.backdrop!,
-                            Align(
-                              alignment: widget.rtlOpening
-                                  ? Alignment.centerRight
-                                  : Alignment.centerLeft,
-                              child: SlideTransition(
-                                position: _drawerSlideAnimation,
-                                child: FractionallySizedBox(
-                                  widthFactor: widget.openRatio,
-                                  child: ScaleTransition(
-                                    scale: _drawerScaleAnimation,
-                                    alignment: widget.rtlOpening
-                                        ? Alignment.centerLeft
-                                        : Alignment.centerRight,
-                                    child: RepaintBoundary(
-                                      child: Semantics(
-                                        container: true,
-                                        explicitChildNodes: true,
-                                        child: widget.drawer,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                      child: child,
+                    ),
+                  );
+                },
+                child: Stack(
+                  children: [
+                    if (widget.backdrop != null) widget.backdrop!,
+                    Align(
+                      alignment: widget.rtlOpening
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                      child: SlideTransition(
+                        position: _drawerSlideAnimation,
+                        child: FractionallySizedBox(
+                          widthFactor: widget.openRatio,
+                          child: ScaleTransition(
+                            scale: _drawerScaleAnimation,
+                            alignment: widget.rtlOpening
+                                ? Alignment.centerLeft
+                                : Alignment.centerRight,
+                            child: RepaintBoundary(
+                              child: Semantics(
+                                container: true,
+                                explicitChildNodes: true,
+                                child: widget.drawer,
                               ),
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    );
-                  }),
+                    ),
+                  ],
+                ),
+              ),
               SlideTransition(
                 position: _childSlideAnimation,
                 textDirection:
@@ -186,7 +188,8 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                   scale: _childScaleAnimation,
                   child: ValueListenableBuilder<AdvancedDrawerValue>(
                     valueListenable: _controller,
-                    builder: (_, value, __) {
+                    child: widget.child,
+                    builder: (_, value, child) {
                       final childStack = Stack(
                         children: [
                           ExcludeFocus(
@@ -194,7 +197,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                             child: ExcludeSemantics(
                               excluding: value.visible,
                               child: RepaintBoundary(
-                                child: widget.child,
+                                child: child,
                               ),
                             ),
                           ),
