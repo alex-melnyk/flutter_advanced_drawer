@@ -20,7 +20,7 @@ class AdvancedDrawer extends StatefulWidget {
     this.rtlOpening = false,
     this.disabledGestures = false,
     this.animationController,
-    this.drawerCloseSemanticLabel,
+    this.drawerCloseSemanticLabel = 'Close drawer',
   }) : super(key: key);
 
   /// Child widget. (Usually widget that represent a screen)
@@ -206,8 +206,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                             child: Material(
                               color: Colors.transparent,
                               child: Semantics(
-                                label: widget.drawerCloseSemanticLabel ??
-                                    'Close drawer',
+                                label: widget.drawerCloseSemanticLabel,
                                 button: true,
                                 container: true,
                                 child: InkWell(
