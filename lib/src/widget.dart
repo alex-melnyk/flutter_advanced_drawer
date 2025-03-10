@@ -151,7 +151,19 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                           ? Alignment.centerLeft
                           : Alignment.centerRight,
                       child: RepaintBoundary(
-                        child: widget.drawer,
+                        child: ValueListenableBuilder<AdvancedDrawerValue>(
+                            valueListenable: _controller,
+                            builder: (_, value, __) {
+                              return ExcludeFocus(
+                                excluding: !value.visible,
+                                child: Semantics(
+                                  excludeSemantics: !value.visible,
+                                  container: true,
+                                  explicitChildNodes: true,
+                                  child: widget.drawer,
+                                ),
+                              );
+                            }),
                       ),
                     ),
                   ),
@@ -171,9 +183,12 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                     builder: (_, value, __) {
                       final childStack = Stack(
                         children: [
-                          ExcludeSemantics(
-                              excluding: value.visible,
-                              child: RepaintBoundary(child: widget.child)),
+                          ExcludeFocus(
+                            excluding: value.visible,
+                            child: ExcludeSemantics(
+                                excluding: value.visible,
+                                child: RepaintBoundary(child: widget.child)),
+                          ),
                           Visibility(
                             visible: value.visible,
                             child: Material(
@@ -182,6 +197,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                                 label: widget.drawerCloseSemanticLabel ??
                                     'Close drawer',
                                 button: true,
+                                container: true,
                                 child: InkWell(
                                   onTap: _controller.hideDrawer,
                                   splashColor: Colors.transparent,
