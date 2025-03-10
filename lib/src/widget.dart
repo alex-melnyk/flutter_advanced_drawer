@@ -166,41 +166,31 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                       ? Alignment.centerRight
                       : Alignment.centerLeft,
                   scale: _childScaleAnimation,
-                  child: Builder(
-                    builder: (_) {
+                  child: ValueListenableBuilder<AdvancedDrawerValue>(
+                    valueListenable: _controller,
+                    builder: (_, value, __) {
                       final childStack = Stack(
                         children: [
-                          ValueListenableBuilder<AdvancedDrawerValue>(
-                            valueListenable: _controller,
-                            builder: (_, value, __) {
-                              return ExcludeSemantics(
-                                  excluding: value.visible,
-                                  child: RepaintBoundary(child: widget.child));
-                            },
-                          ),
-                          ValueListenableBuilder<AdvancedDrawerValue>(
-                            valueListenable: _controller,
-                            builder: (_, value, __) {
-                              if (!value.visible) {
-                                return const SizedBox();
-                              }
-
-                              return Material(
-                                color: Colors.transparent,
-                                child: Semantics(
-                                  label: widget.drawerCloseSemanticLabel ??
-                                      'Close drawer',
-                                  button: true,
-                                  child: InkWell(
-                                    onTap: _controller.hideDrawer,
-                                    splashColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    child: Container(),
-                                  ),
+                          ExcludeSemantics(
+                              excluding: value.visible,
+                              child: RepaintBoundary(child: widget.child)),
+                          Visibility(
+                            visible: value.visible,
+                            child: Material(
+                              color: Colors.transparent,
+                              child: Semantics(
+                                label: widget.drawerCloseSemanticLabel ??
+                                    'Close drawer',
+                                button: true,
+                                child: InkWell(
+                                  onTap: _controller.hideDrawer,
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  child: Container(),
                                 ),
-                              );
-                            },
-                          ),
+                              ),
+                            ),
+                          )
                         ],
                       );
 
