@@ -20,6 +20,7 @@ class AdvancedDrawer extends StatefulWidget {
     this.rtlOpening = false,
     this.disabledGestures = false,
     this.animationController,
+    this.drawerCloseSemanticLabel,
   }) : super(key: key);
 
   /// Child widget. (Usually widget that represent a screen)
@@ -73,6 +74,14 @@ class AdvancedDrawer extends StatefulWidget {
 
   /// Controller that controls widget animation.
   final AnimationController? animationController;
+
+  /// Provides a textual description of the close drawer action.
+  ///
+  /// This is used by accessibility frameworks to provide context
+  /// for screen readers of what the close drawer action will do.
+  ///
+  /// if null, it will default to `'Close drawer'`
+  final String? drawerCloseSemanticLabel;
 
   @override
   _AdvancedDrawerState createState() => _AdvancedDrawerState();
@@ -161,7 +170,14 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                     builder: (_) {
                       final childStack = Stack(
                         children: [
-                          RepaintBoundary(child: widget.child),
+                          ValueListenableBuilder<AdvancedDrawerValue>(
+                            valueListenable: _controller,
+                            builder: (_, value, __) {
+                              return ExcludeSemantics(
+                                  excluding: value.visible,
+                                  child: RepaintBoundary(child: widget.child));
+                            },
+                          ),
                           ValueListenableBuilder<AdvancedDrawerValue>(
                             valueListenable: _controller,
                             builder: (_, value, __) {
@@ -171,11 +187,16 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
 
                               return Material(
                                 color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: _controller.hideDrawer,
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  child: Container(),
+                                child: Semantics(
+                                  label: widget.drawerCloseSemanticLabel ??
+                                      'Close drawer',
+                                  button: true,
+                                  child: InkWell(
+                                    onTap: _controller.hideDrawer,
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    child: Container(),
+                                  ),
                                 ),
                               );
                             },
