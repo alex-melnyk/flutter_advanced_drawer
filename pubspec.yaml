@@ -7,7 +7,7 @@ issue_tracker: https://github.com/alex-melnyk/flutter_advanced_drawer/issues
 documentation: https://github.com/alex-melnyk/flutter_advanced_drawer/blob/master/README.md
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.12.0 <4.0.0"
 
 dependencies:
   flutter:
