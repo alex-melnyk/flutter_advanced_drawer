@@ -1,3 +1,10 @@
+## 1.5.0
+
+* Added `drawerCloseSemanticLabel` parameter to set a semantic label for the tappable area that closes the drawer.
+* Integrated [`Semantics`](https://api.flutter.dev/flutter/widgets/Semantics-class.html) widgets to provide better screen reader support.
+* Integrated [`ExcludeFocus`](https://api.flutter.dev/flutter/widgets/ExcludeFocus-class.html) and [`ExcludeSemantics`](https://api.flutter.dev/flutter/widgets/ExcludeSemantics-class.html) to widgets to dynamically control focus and semantics based on drawer visibility.
+* Refactored Inkwell hiding to use `Visibility`
+
 ## 1.4.0
 
 * Added "initialDrawerScale" parameter to set the initial scale of the drawer.
