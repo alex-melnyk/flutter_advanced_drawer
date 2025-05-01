@@ -64,9 +64,13 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (_, value, __) {
                 return AnimatedSwitcher(
                   duration: Duration(milliseconds: 250),
-                  child: Icon(
-                    value.visible ? Icons.clear : Icons.menu,
-                    key: ValueKey<bool>(value.visible),
+                  child: Semantics(
+                    label: 'Menu',
+                    onTapHint: 'expand drawer',
+                    child: Icon(
+                      value.visible ? Icons.clear : Icons.menu,
+                      key: ValueKey<bool>(value.visible),
+                    ),
                   ),
                 );
               },
