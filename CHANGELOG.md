@@ -7,8 +7,8 @@
 
 ## 1.4.0
 
-* Added "initialDrawerScale" parameter to set the initial scale of the drawer.
-* Added "drawerSlideRatio" parameter to set the slide ratio of the drawer.
+* Added `initialDrawerScale` parameter to set the initial scale of the drawer.
+* Added `drawerSlideRatio` parameter to set the slide ratio of the drawer.
 
 ## 1.3.7
 
@@ -20,7 +20,7 @@
 
 ## 1.3.5
 
-* Added backdrop field to set custom background
+* Added `backdrop` field to set custom background
 
 ## 1.3.4
 
@@ -54,7 +54,7 @@
 
 ## 1.2.3
 
-* "disabledGestures" option added to disable gestures.
+* `disabledGestures` option added to disable gestures.
 
 ## 1.2.2
 
