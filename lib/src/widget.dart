@@ -20,6 +20,7 @@ class AdvancedDrawer extends StatefulWidget {
     this.rtlOpening = false,
     this.disabledGestures = false,
     this.animationController,
+    this.drawerCloseSemanticLabel = 'Close drawer',
   }) : super(key: key);
 
   /// Child widget. (Usually widget that represent a screen)
@@ -74,6 +75,14 @@ class AdvancedDrawer extends StatefulWidget {
   /// Controller that controls widget animation.
   final AnimationController? animationController;
 
+  /// Provides a textual description of the close drawer action.
+  ///
+  /// This is used by accessibility frameworks to provide context
+  /// for screen readers of what the close drawer action will do.
+  ///
+  /// if null, it will default to `'Close drawer'`
+  final String? drawerCloseSemanticLabel;
+
   @override
   _AdvancedDrawerState createState() => _AdvancedDrawerState();
 }
@@ -127,25 +136,45 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
           color: Colors.transparent,
           child: Stack(
             children: [
-              if (widget.backdrop != null) widget.backdrop!,
-              Align(
-                alignment: widget.rtlOpening
-                    ? Alignment.centerRight
-                    : Alignment.centerLeft,
-                child: SlideTransition(
-                  position: _drawerSlideAnimation,
-                  child: FractionallySizedBox(
-                    widthFactor: widget.openRatio,
-                    child: ScaleTransition(
-                      scale: _drawerScaleAnimation,
+              ValueListenableBuilder<AdvancedDrawerValue>(
+                valueListenable: _controller,
+                builder: (_, value, child) {
+                  return ExcludeFocus(
+                    excluding: !value.visible,
+                    child: ExcludeSemantics(
+                      excluding: !value.visible,
+                      child: child,
+                    ),
+                  );
+                },
+                child: Stack(
+                  children: [
+                    if (widget.backdrop != null) widget.backdrop!,
+                    Align(
                       alignment: widget.rtlOpening
-                          ? Alignment.centerLeft
-                          : Alignment.centerRight,
-                      child: RepaintBoundary(
-                        child: widget.drawer,
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                      child: SlideTransition(
+                        position: _drawerSlideAnimation,
+                        child: FractionallySizedBox(
+                          widthFactor: widget.openRatio,
+                          child: ScaleTransition(
+                            scale: _drawerScaleAnimation,
+                            alignment: widget.rtlOpening
+                                ? Alignment.centerLeft
+                                : Alignment.centerRight,
+                            child: RepaintBoundary(
+                              child: Semantics(
+                                container: true,
+                                explicitChildNodes: true,
+                                child: widget.drawer,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
               SlideTransition(
@@ -157,29 +186,38 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                       ? Alignment.centerRight
                       : Alignment.centerLeft,
                   scale: _childScaleAnimation,
-                  child: Builder(
-                    builder: (_) {
+                  child: ValueListenableBuilder<AdvancedDrawerValue>(
+                    valueListenable: _controller,
+                    child: widget.child,
+                    builder: (_, value, child) {
                       final childStack = Stack(
                         children: [
-                          RepaintBoundary(child: widget.child),
-                          ValueListenableBuilder<AdvancedDrawerValue>(
-                            valueListenable: _controller,
-                            builder: (_, value, __) {
-                              if (!value.visible) {
-                                return const SizedBox();
-                              }
-
-                              return Material(
-                                color: Colors.transparent,
+                          ExcludeFocus(
+                            excluding: value.visible,
+                            child: ExcludeSemantics(
+                              excluding: value.visible,
+                              child: RepaintBoundary(
+                                child: child,
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: value.visible,
+                            child: Material(
+                              color: Colors.transparent,
+                              child: Semantics(
+                                label: widget.drawerCloseSemanticLabel,
+                                button: true,
+                                container: true,
                                 child: InkWell(
                                   onTap: _controller.hideDrawer,
                                   splashColor: Colors.transparent,
                                   highlightColor: Colors.transparent,
                                   child: Container(),
                                 ),
-                              );
-                            },
-                          ),
+                              ),
+                            ),
+                          )
                         ],
                       );
 
@@ -273,7 +311,9 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     // If widget is not mounted do nothing
     if (!mounted) return;
     // If the value of _controller is visible, forward the animation; otherwise, reverse it
-    _controller.value.visible ? _animationController.forward() : _animationController.reverse();
+    _controller.value.visible
+        ? _animationController.forward()
+        : _animationController.reverse();
   }
 
   void _handleDragStart(DragStartDetails details) {
